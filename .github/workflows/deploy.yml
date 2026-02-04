@@ -6,8 +6,8 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  ECR_BACKEND: 331374384642.dkr.ecr.us-east-1.amazonaws.com/back:latest
-  ECR_FRONTEND: 331374384642.dkr.ecr.us-east-1.amazonaws.com/front:latest
+  ECR_BACKEND: 331374384642.dkr.ecr.us-east-1.amazonaws.com/back
+  ECR_FRONTEND: 331374384642.dkr.ecr.us-east-1.amazonaws.com/front
 
 jobs:
   build-and-push:
