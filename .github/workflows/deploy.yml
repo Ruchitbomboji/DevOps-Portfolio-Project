@@ -1,0 +1,47 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  AWS_REGION: us-east-1
+  ECR_BACKEND: 331374384642.dkr.ecr.us-east-1.amazonaws.com/back:latest
+  ECR_FRONTEND: 331374384642.dkr.ecr.us-east-1.amazonaws.com/front:latest
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build Backend Image
+      run: |
+        docker build -t backend ./backend
+        docker tag backend:latest $ECR_BACKEND:latest
+
+    - name: Build Frontend Image
+      run: |
+        docker build -t frontend ./frontend
+        docker tag frontend:latest $ECR_FRONTEND:latest
+
+    - name: Push Backend Image to ECR
+      run: |
+        docker push $ECR_BACKEND:latest
+
+    - name: Push Frontend Image to ECR
+      run: |
+        docker push $ECR_FRONTEND:latest
