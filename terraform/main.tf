@@ -23,6 +23,15 @@ resource "aws_subnet" "private" {
   tags = { Name = "private-subnet" }
 }
 
+resource "aws_subnet" "private_2" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = var.private_subnet_2_cidr
+  availability_zone = "${var.aws_region}b"
+
+  tags = { Name = "private-subnet-2" }
+}
+
+
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id
 
@@ -142,8 +151,10 @@ resource "aws_instance" "app" {
 
 resource "aws_db_subnet_group" "db_subnets" {
   name       = "db-subnets"
-  subnet_ids = [aws_subnet.private.id]
-
+  subnet_ids = [
+  aws_subnet.private.id,
+  aws_subnet.private_2.id
+]
   tags = { Name = "db-subnet-group" }
 }
 
